@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles/main.css') }}" />
+</head>
+
+<body>
+    <div class="app-container">
+        <h1>Rollin API</h1>
+
+        <div class="form-container">
+            <form id="form" method="post" action="/">
+                <input type="text" name="email" placeholder="email" class="email-field" />
+                <button type="submit">submit</button>
+            </form>
+            <span class="validation-message"></span>
+        </div>
+
+        <div>
+            {% if user_key %}
+            <p>Your API key is: <code>{{user_key}}</code></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{{ url_for('static', path='/js/index.js') }}"></script>
+</body>
+
+</html>
