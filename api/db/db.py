@@ -23,7 +23,7 @@ def post_form(data: FormData):
     user_api_key = generate_api_key(32)
     user_token = generate_api_key(16)
 
-    create_statement = "CREATE TABLE IF NOT EXISTS users(email TEXT UNIQUE, apiKey TEXT, userToken TEXT)"
+    create_statement = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, email TEXT UNIQUE, apiKey TEXT, userToken TEXT)"
     post_statement = "INSERT INTO users (email, apiKey, userToken) VALUES (?,?,?)"
 
     try: 
@@ -33,13 +33,30 @@ def post_form(data: FormData):
             cursor.execute(create_statement)
             cursor.execute(post_statement, [data.email, user_api_key, user_token] )
             conn.commit()
-        
-            # TODO: prevent duplicate email entries
 
     except sqlite3.Error as err:
         print(err)
 
     return user_api_key
+
+
+# duplicate entries are prevented via unique constraint - check user email against db entry
+def check_email_exists(email: str):
+    connection = db_connect()
+    try:
+        with connection as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT email from users WHERE email = ?', [email])
+            conn.commit()
+
+            row = cursor.fetchone()
+            if row:
+                return(row)
+        
+            return False
+            
+    except sqlite3.Error as err:
+        print(err)
 
 
 # provide user supplied api key to auth endpoint 
