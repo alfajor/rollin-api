@@ -6,7 +6,6 @@ def db_connect():
     conn = None
     try:
         conn = sqlite3.connect('api.db')
-        print('Success! Connected to sqlite', sqlite3.sqlite_version)
     except sqlite3.Error as err:
         print(err)
     finally:

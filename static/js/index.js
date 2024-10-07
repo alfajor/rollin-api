@@ -10,10 +10,10 @@ const formHandler = (e) => {
 
     if(emailField.value == '') {
         e.preventDefault();
-        validationMessage.textContent = '* Email is required';
+        validationMessage.textContent = '* Please enter your email';
     } else if(!isValidEmail) {
         e.preventDefault();
-        validationMessage.textContent = '* Invalid email';
+        validationMessage.textContent = '* Whoa! Invalid email. Try again.';
     } else {
         // we're posting
         validationMessage.textContent = '';

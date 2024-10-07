@@ -1,31 +1,94 @@
 body {
-  background-color: #fff;
   color: #222;
   font-family: "Helvetica", "sans-serif";
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 55px;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+a {
+  color: greenyellow;
 }
 
 .app-container {
   display: flex;
+  height: 100vh;
+}
+@media screen and (max-width: 900px) {
+  .app-container {
+    flex-flow: column;
+  }
+}
+.app-container .inner-content {
+  display: flex;
   flex-flow: column;
   align-items: center;
+  width: 60%;
+  text-align: center;
+  background-color: #f1f1f1;
 }
-
-.form-container {
+@media screen and (max-width: 900px) {
+  .app-container .inner-content {
+    width: 100%;
+  }
+}
+.app-container .form-container {
   display: flex;
   flex-flow: column;
   margin-top: 30px;
 }
-.form-container input {
+.app-container .form-container input {
   padding: 8px 10px;
   border-radius: 5px;
-  border: 1px solid #444;
+  border: 1px solid #222;
 }
-.form-container button {
+.app-container .form-container button {
   padding: 8px 10px;
-  border: 1px solid #444;
+  border: 1px solid #222;
   border-radius: 5px;
-  background: transparent;
+  background-color: transparent;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.app-container .form-container button:hover {
+  background-color: greenyellow;
+  transition: background-color 0.3s ease;
+}
+.app-container .menu {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  width: 40%;
+  background-color: #222;
+  color: #fff;
+}
+@media screen and (max-width: 900px) {
+  .app-container .menu {
+    width: 100%;
+  }
+}
+.app-container .menu .navigation-menu {
+  margin-left: 3%;
+  margin-right: 3%;
+}
+.app-container .menu .navigation-menu h3 {
+  font-weight: 600;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+.app-container .menu .navigation-menu li {
+  list-style: square;
+  line-height: 1.4;
+}
+
+code {
+  color: greenyellow;
 }
 
 .validation-message {

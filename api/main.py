@@ -1,10 +1,13 @@
 from dotenv import load_dotenv
 import os
-from fastapi import FastAPI, Request, Security, Form
+from fastapi import FastAPI, Request, Response, Security, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from models.entry import EntryList
 from models.form import FormData
 from auth import api_key_auth
@@ -14,27 +17,25 @@ load_dotenv()
 middleware_key = os.getenv('SESSION_MIDDLEWARE_KEY')
 
 # TODO:
-# determine data source to feed API - json file? spreadsheet? user supplied?
+# determine data source to feed API - currently json file. spreadsheet? user supplied?
 # API frontend 
-    # assigning / revoking unique api keys to client 
-    # user key management? periodic key expiration? 
-# rate limiting requests - user / key based? -- https://github.com/laurentS/slowapi
+    # assigning / revoking unique api keys to client?
+    # user key management - requesting new keys? periodic key expiration? 
+    # monitoring user key access / requests
 # remove POST capability on endpoint once data is set
 # persisting & continually adding data
 
 app = FastAPI()
 
+# rate limiter 
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # session middleware
 app.add_middleware(SessionMiddleware, secret_key=str(middleware_key), max_age=3600, https_only=True)
 
-# @app.middleware('http')
-# async def set_state_key(request: Request, call_next):
-#     # set variable to req state & access in http route
-#     request.state.user_key = '' # some value to be passed
-#     res = await call_next(request)
-#     return res
-
-# static dir
+# static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 # templates
 templates = Jinja2Templates(directory="templates")
@@ -50,7 +51,7 @@ async def form_handler(request: Request, form_data: FormData = Form(...)): # han
     user_api_key = None
     message = None
     if emailExists:
-        message = "Email exists. Please enter a new email."
+        message = "Email record exists. Please enter another email."
         user_api_key = None
     else: 
         message = "Thanks! Your API key is: " 
@@ -60,19 +61,21 @@ async def form_handler(request: Request, form_data: FormData = Form(...)): # han
     
 # endpoint routes
 @app.get('/api/v1')
-def status():
+async def status():
     return {'status': 'ok'}
 
 data_set = []
 
 @app.post('/api/v1/academies')
-def post_entries(data: EntryList, api_key: str = Security(api_key_auth)):
+@limiter.limit('10/minute')
+async def post_entries(request: Request, data: EntryList, api_key: str = Security(api_key_auth)):
     # access data obj in future requests
     data_set.append(data) 
     return data
 
 @app.get('/api/v1/academies')
-def get_entries(api_key: str = Security(api_key_auth)):
+@limiter.limit('10/minute')
+async def get_entries(request: Request, response: Response, api_key: str = Security(api_key_auth)):
     return data_set
 
-# TODO: searching / filtering within API endpoint - query params
+# TODO: searching / filtering / limiting etc within endpoint - query params

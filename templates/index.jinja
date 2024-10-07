@@ -9,34 +9,28 @@
 
 <body>
     <div class="app-container">
-        <h1>Rollin API</h1>
-        <p>A Brazilian Jiujitsu academy API reference</p>
+        <div class="inner-content">
+            <h1>Rollin' API</h1>
+            <h3>A Brazilian Jiujitsu academy API reference</h3>
 
+            <div class="form-container">
+                <p>Enter your email to generate an API key</p>
+                <form id="form" method="post" action="/">
+                    <input type="text" name="email" placeholder="email" class="email-field" />
+                    <button type="submit">submit</button>
+                </form>
+                <span class="validation-message"></span>
+            </div>
 
-        <div class="form-container">
-            <p>Enter your email to get an API key</p>
-            <form id="form" method="post" action="/">
-                <input type="text" name="email" placeholder="email" class="email-field" />
-                <button type="submit">submit</button>
-            </form>
-            <span class="validation-message"></span>
+            <div class="result">
+                {% if user_key %}
+                <p>{{message}}<code>{{user_key}}</code></p>
+                {% else %}
+                <p>{{message}}</p>
+                {% endif %}
+            </div>
         </div>
-
-        <div class="result">
-            {% if user_key %}
-            <p>{{message}}<code>{{user_key}}</code></p>
-            {% else %}
-            <p>{{message}}</p>
-            {% endif %}
-        </div>
-    </div>
-
-    {# menu-ify this #}
-    <div class="usage">
-        <h2>Get started</h2>
-        {# eventually a real URL endpoint #}
-        <p>API endpoint can be accessed at <a href="http://localhost:8000/api/v1/academies">Rollin API</a></p>
-        <p>Provide your API key in the request: <code>/?api_key=YOUR_API_KEY</code></p>
+        {% include "menu.jinja" %}
     </div>
 
     <script type="text/javascript" src="{{ url_for('static', path='/js/index.js') }}"></script>

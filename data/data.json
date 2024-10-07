@@ -72,6 +72,24 @@
                     "coordinates": [-111.810516, 40.616310],
                     "mapCoordinates": [40.616310, -111.810516]
             }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": 4,
+                "name": "BJJ Ninja",
+                "city": "Portland",
+                "state": "Oregon",
+                "stateAbbr": "OR",
+                "country": "USA",
+                "address": "349 powell blvd",
+                "website": "wrastling.biz"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-122.658722, 45.512230],
+                    "mapCoordinates": [45.512230, -122.658722]
+            }
         }
     ]
 }
